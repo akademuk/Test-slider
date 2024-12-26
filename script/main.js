@@ -7,13 +7,14 @@ $(document).ready(function () {
             nextEl: ".swiper-button-next",
             prevEl: ".swiper-button-prev",
         },
+        speed: 700, // Устанавливаем скорость анимации
     });
 
     let isSliderActive = false;
     let scrollDelta = 0;
     const scrollThreshold = 50;
     let isScrollingAllowed = true;
-    const breakpoint = 1280; // Ширина экрана для отключения блокировки
+    const breakpoint = 1280;
 
     function calculateScrollbarWidth() {
         const scrollDiv = document.createElement("div");
@@ -86,7 +87,7 @@ $(document).ready(function () {
         isScrollingAllowed = false;
         setTimeout(() => {
             isScrollingAllowed = true;
-        }, 700);
+        }, 1000); // Принудительная задержка 2 секунды
     }
 
     function handleScroll(event) {
@@ -102,11 +103,17 @@ $(document).ready(function () {
     }
 
     function enableScrollHandling() {
-        $(window).on("wheel", handleScroll);
+        $(window).on("wheel", (event) => {
+            if (!isScrollingAllowed) {
+                event.preventDefault();
+                return;
+            }
+            handleScroll(event);
+        });
     }
 
     function disableScrollHandling() {
-        $(window).off("wheel", handleScroll);
+        $(window).off("wheel");
         unblockPageScroll();
     }
 
