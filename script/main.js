@@ -57,7 +57,7 @@ $(document).ready(function () {
 
         if (!isScrollingAllowed) return;
 
-        scrollDelta += event.originalEvent.deltaY;
+        scrollDelta += event.deltaY;
 
         if (Math.abs(scrollDelta) >= scrollThreshold) {
             if (scrollDelta > 0) {
@@ -67,7 +67,7 @@ $(document).ready(function () {
                 } else {
                     unblockPageScroll();
                     isSliderActive = false;
-                    $(window).scrollTop($(window).scrollTop() + scrollDelta);
+                    window.scrollBy(0, scrollDelta);
                 }
             } else {
                 if (!isFirstSlide) {
@@ -76,7 +76,7 @@ $(document).ready(function () {
                 } else {
                     unblockPageScroll();
                     isSliderActive = false;
-                    $(window).scrollTop($(window).scrollTop() + scrollDelta);
+                    window.scrollBy(0, scrollDelta);
                 }
             }
             scrollDelta = 0;
@@ -87,7 +87,7 @@ $(document).ready(function () {
         isScrollingAllowed = false;
         setTimeout(() => {
             isScrollingAllowed = true;
-        }, 1000); // Принудительная задержка 2 секунды
+        }, 500); // Принудительная задержка 500 мс
     }
 
     function handleScroll(event) {
@@ -103,17 +103,11 @@ $(document).ready(function () {
     }
 
     function enableScrollHandling() {
-        $(window).on("wheel", (event) => {
-            if (!isScrollingAllowed) {
-                event.preventDefault();
-                return;
-            }
-            handleScroll(event);
-        });
+        window.addEventListener("wheel", handleScroll, { passive: false });
     }
 
     function disableScrollHandling() {
-        $(window).off("wheel");
+        window.removeEventListener("wheel", handleScroll);
         unblockPageScroll();
     }
 
